@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DB")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["referentialActions"]
+}
+
+//Models, Outfits, Designers, Events and Guests
+
+model Model {
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName String
+  agency String
+  outfits Outfit []
+  events Event []
+}
+
+model Designer {
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName String 
+  events Event [] 
+  outfits Outfit []
+}
+
+model Outfit {
+  id Int @id @default(autoincrement())
+  description String
+  season String
+  price Float
+  modelId Int
+  designerId Int
+  guestId Int
+  model Model @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  designer Designer @relation(fields: [designerId], references: [id], onDelete: Cascade)
+  guests Guest @relation(fields: [guestId], references: [id], onDelete: Cascade)
+}
+
+model Event {
+  id Int @id @default(autoincrement())
+  name String
+  modelId Int
+  guestId Int
+  designerId Int
+  model Model @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  guest Guest  @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  designer Designer  @relation(fields: [designerId ], references: [id], onDelete: Cascade)
+}
+
+model Guest {
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName String
+  company String
+  purchases Outfit []
+  events Event []
+}
+
+
+
