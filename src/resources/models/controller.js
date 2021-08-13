@@ -1,4 +1,4 @@
-const { model } = require("../../utils/dbClient");
+const { model, outfit } = require("../../utils/dbClient");
 
 const getAllModels = async (req, res) => {
   try {
@@ -93,10 +93,31 @@ const removeModel = async (req, res) => {
     res.json(`No ID ${id} found..`);
   }
 };
+
+async function getModelOutfits(req, res) {
+  const id = parseInt(req.params.id);
+
+  try {
+    const outfits = await outfit.findMany({
+      where: { model: { id } },
+      select: {
+        description: true,
+        season: true,
+      },
+    });
+    const result = outfits.length
+      ? outfits
+      : `Model ${id} doen't have any outfits `;
+    res.json({ outfits: result });
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+}
 module.exports = {
   getAllModels,
   getModelsByAgency,
   addAModel,
   updateModel,
   removeModel,
+  getModelOutfits,
 };

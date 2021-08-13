@@ -6,11 +6,14 @@ const {
   addAModel,
   updateModel,
   removeModel,
+  getModelOutfits,
 } = require("./controller");
 
 router.get("/", getAllModels);
 
 router.get("/:agency", getModelsByAgency);
+
+router.get("/:id/outfits", getModelOutfits);
 
 router.post("/", addAModel);
 
